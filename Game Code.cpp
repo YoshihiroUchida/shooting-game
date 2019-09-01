@@ -1,13 +1,13 @@
 #include <iostream> // namespace を使用する
-#include <memory> // スマートポインタ（自動デストラクタ付）を使用
+#include <memory> // スマートポインタ（自動デストラクタ付）を使用する
 #include <list> // コンテナ（list）を使用する
-#include <algorithm> // for_eachを使用する
-# include <cmath> // pow()（べき乗の計算）を使用する
+#include <algorithm> // for_each を使用する
+#include <cmath> // pow()（べき乗の計算）を使用する
 #include "DxLib.h" // DXライブラリを使用する
 
-using namespace std;
+using namespace std; // std::～の構文を略す
 
-// 列挙型 関数のスイッチとして使用
+// 列挙型　関数のスイッチとして使用する
 // 画像
 enum ThingType {
 
@@ -43,47 +43,48 @@ enum ThingType {
 // 音楽
 enum Sound {
 
-	SOUND_SHOT1, // SHOT音
-	SOUND_SHOT2, // SHOT音2
-	SOUND_CHARGE, // CHARGE中の音
-	SOUND_CHARGE_SHOT, // CHARGE SHOTを放射する音
+	SOUND_SHOT1, // SHOT1 音
+	SOUND_SHOT2, // SHOT2 音
+	SOUND_CHARGE, // CHARGE 中の音
+	SOUND_CHARGE_SHOT, // CHARGE SHOTの音
 	SOUND_ENEMY_SHOT, // ENEMY SHOTの音
-	SOUND_BEAM, // BEAM音
-	SOUND_E_ATTACK, // ENEMYのアタック音
-	SOUND_P_ATTACK, // PLAYERのアタック音
+	SOUND_BEAM, // BEAM 音
+	SOUND_E_ATTACK, // ENEMY のアタック音
+	SOUND_P_ATTACK, // PLAYER のアタック音
 	SOUND_HEAL, // 回復音
 	SOUND_BREAK, // 破壊音
 	SOUND_NUM, // 列挙対の数
 };
 
-class Thing; // スマートポインタ（自動デストラクタ付）の Thing クラスを作るために宣言する
+class Thing; // スマートポインタ（自動デストラクタ付）の Thing クラスを作る為に宣言する
 
 // Thing クラスのスマートポインタ（shared_ptr で Thing 型）ThingPointa を定義する
-// GAME クラスで コンテナ（list）の型に使用する
+// Game クラスでコンテナ（list）の型に使用する
 // スマートポインタは new で確保したメモリを自動的に delete する
-// typedef は元々あるデータ型に異なる名前を付ける
-typedef std::shared_ptr <Thing> ThingPointa;
+// typedef は元々のデータ型へ別名を付ける
+typedef shared_ptr <Thing> ThingPointa;
 
-// グローバル変数（全体に関わる変数）
+// グローバル変数（全体に関連する変数）
 int scene; // 画面
 int stage; // STAGE
 int score; // スコア
-int shot_count = 0; // 弾の発射間隔の調整 0に設定する
-int enemy_x; // 敵の x座標に置換する
-int enemy_y; // 敵の y座標に置換する
-int enemy_num = 0; // 画面上の敵の数 0に設定する
+int shot_count = 0; // 弾の間隔調整　０に設定する
+int enemy_x; // 敵の x 座標に置く
+int enemy_y; // 敵の y 座標に置く
+int enemy_num = 0; // 画面上の敵　０に設定する
 int enemy_s; // 敵の速度
-int pause_flag; // ポーズ（休止）フラグ
+bool pause_flag; // ポーズ（休止）フラグ
 
 int loaded_picture[TYPE_NUM]; // 画像配列
 int loaded_sound[SOUND_NUM]; // 音配列
 
-int Title_m; // タイトル中の音
-int Play_m; // プレイ中の音
-int Over_m; // オーバー中の音
-int Clear_m; // クリア中の音
-int Pause_m; // ポーズ（休止）画面の効果音
-int Boss_m; // ボス中の音
+// 音楽ファイル格納用変数（Game クラスにて設定する）
+int Title_m; // タイトル中
+int Play_m; // プレイ中
+int Over_m; // オーバー中
+int Clear_m; // クリア中
+int Pause_m; // ポーズ（休止）画面
+int Boss_m; // ボス中
 
 // Thing クラス（継承クラス）
 class Thing {
@@ -96,15 +97,16 @@ protected: // 子クラスに継承する
 	int m_h; // 縦幅
 	int m_s; // 速度
 
-	float hit_x; // 当たり判定の x 座標
-	float hit_y; // 当たり判定の y 座標
-	float hit_w; // 当たり判定の横幅
-	float hit_h; // 当たり判定の縦幅
+	// 当たり判定変数
+	float hit_x; // x 座標
+	float hit_y; // y 座標
+	float hit_w; // 横幅
+	float hit_h; // 縦幅
 
 	int life_max; // 設定体力
 	int life_now; // 今の体力
 	int energy_max; // 設定特殊量
-	int energy_now; // 特殊量の数
+	int energy_now; // 今の特殊量
 	int damage; // 損害量
 	int energy; // 特殊量
 	bool remove_flag; // 削除フラグ
@@ -113,26 +115,28 @@ protected: // 子クラスに継承する
 public:
 
 	Thing(); // コンストラクタ（削除フラグを false に）
-	void SET_picture(const char* file_name, ThingType thing); // const char* にする　クラスに画像を設置する
-	virtual void SET_sound(const char* file_name, Sound sound); // const char* にする　クラスに音を設置する
-	virtual void SET_position(int, int); // 初期座標を設定
-	void SET_hitarea(int, int, int, int); // 当たり判定を設定
+	void SET_picture(const char* file_name, ThingType thing); // const char* にする　クラスに画像を置く
+	virtual void SET_sound(const char* file_name, Sound sound); // const char* にする　クラスに音を置く
+	virtual void SET_position(int, int); // 初期座標を設定する
+	virtual void SET_hitarea(int, int, int, int); // 当たり判定を設定する
 	bool GET_remove(); // 削除フラグを得る
 	bool HIT_test(ThingPointa&); // 当たり判定の関数
 
-	virtual ThingType GET_TYPE() = 0; // タイプを得る（純粋仮想）
-	virtual ThingType HIT_TYPE(); // 当たる タイプを NONE にする（仮想）
+	virtual ThingType GET_TYPE() = 0; // 自分のタイプを得る（純粋仮想）
+	virtual ThingType HIT_TYPE(); // 当たるタイプを NONE にする（仮想）
 
-	int GET_damage(); // 損害量 の処理
-	int GET_energy(); // 特殊量 の処理
+	int GET_damage(); // 損害量の処理をする
+	int GET_energy(); // 特殊量の処理をする
 
+	virtual void SET_angle(float a) {}; // 角度設定する
+	virtual void SET_sign(int s) {}; // 符号設定する
 	virtual void move() = 0; // 行動範囲（純粋仮想）
-	virtual void draw(); // 画像の描画
-	void life_draw(); // 体力の描画
-	virtual void hit(int damage, int energy) = 0; // 当たり判定 true の時の処理（純粋仮想）
+	virtual void draw(); // 画像描画をする
+	virtual void life_draw(); // 体力描画をする
+	virtual void hit(int damage, int energy) = 0; // 当たり判定 true の時　処理をする（純粋仮想）
 };
 
-// PLAYER クラス
+// Player クラス
 class Player : public Thing {
 
 private:
@@ -145,36 +149,36 @@ private:
 public:
 
 	Player(); // コンストラクタ（初期設定）
-	ThingType GET_TYPE(); // 自分を PLAYER タイプと返す
-	ThingType HIT_TYPE(); // 当たる Thing タイプを ENEMY1 タイプと返す
-	void move(); // 行動範囲・攻撃・壁の当たり判定
-	void heart_draw(); // 体力の描画
-	void energy_draw(); // 特殊量の描画
-	void draw(); // 損害量に対して点滅
-	void hit(int damage, int energy); // カウントを50にする
+	ThingType GET_TYPE(); // 自分を PLAYER タイプで返す
+	ThingType HIT_TYPE(); // 当たるタイプを ENEMY1 タイプで返す
+	void move(); // 行動範囲・アタック・画面の当たり判定
+	void heart_draw(); // 体力の描画をする
+	void energy_draw(); // 特殊量の描画をする
+	void draw(); // 損害量に対して点滅する
+	void hit(int damage, int energy); // 点滅を５０にする
 };
 
-// SHOT クラス（通常弾）
+// Shot クラス（通常弾）
 class Shot : public Thing {
 
 protected:
 
-	float angle; // 円上の角度
-	float center_x; // 中心 x 座標の設定
-	float center_y; // 中心 y 座標の設定
+	float angle; // 円の角度
+	float center_x; // 中心 x 座標
+	float center_y; // 中心 y 座標
 	float shot_s; // 弾の速度
 
 public:
 
 	Shot(); // コンストラクタ（初期設定）
-	ThingType GET_TYPE(); // 自分を SHOT1 タイプと返す
-	ThingType HIT_TYPE(); // 当たる敵を ENEMY1 タイプと返す
+	ThingType GET_TYPE(); // 自分を SHOT1 タイプで返す
+	ThingType HIT_TYPE(); // 当たる敵を ENEMY1 タイプで返す
 	void move(); // 右方向へ　画面の端で削除する
-	void draw(); // 描画
-	void hit(int damage, int energy); // 処理・削除
+	void draw(); // 描画する
+	void hit(int damage, int energy); // 処理・削除する
 };
 
-// THROUGH SHOT クラス（貫通弾）
+// Through Shot クラス（貫通弾）
 class Through_Shot : public Shot {
 
 public:
@@ -185,7 +189,7 @@ public:
 	void hit(int damage, int energy);
 };
 
-// BEAM クラス（光線）
+// Beam クラス（光線）
 class Beam : public Shot {
 
 public:
@@ -196,8 +200,8 @@ public:
 	void hit(int damage, int energy);
 };
 
-// RASEN SHOT クラス（スパイラル弾）
-class Rasen_Shot : public Through_Shot {
+// Vortex Shot クラス（渦弾）
+class Vortex_Shot : public Through_Shot {
 
 private:
 
@@ -205,113 +209,43 @@ private:
 
 public:
 
+	Vortex_Shot();
 	void SET_position(int, int); // 初期位置を設定する
+	void move();
+	void draw();
+	void hit(int damage, int energy);
+};
+
+// Spray Shot クラス（散布弾）
+class Spray_Shot : public Through_Shot {
+
+public:
+
+	Spray_Shot();
+	void SET_angle(float);
+	void move();
+	void draw();
+	void hit(int damage, int energy);
+};
+
+// Rasen Shot クラス（螺旋弾）
+class Rasen_Shot : public Shot {
+
+private:
+
+	int sign; // 1 or -1（符号格納）
+
+public:
+
 	Rasen_Shot();
+	void SET_position(int, int);
+	void SET_sign(int);
 	void move();
 	void draw();
 	void hit(int damage, int energy);
 };
 
-// SPRAY SHOT1 クラス（散布弾）
-class Spray_Shot1 : public Through_Shot {
-
-public:
-
-	Spray_Shot1();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// SPRAY SHOT2 クラス（下1）
-class Spray_Shot2 : public Spray_Shot1 {
-
-public:
-
-	Spray_Shot2();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// SPRAY SHOT3 クラス（上1）
-class Spray_Shot3 : public Spray_Shot1 {
-
-public:
-
-	Spray_Shot3();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// SPRAY SHOT4 クラス（下3）
-class Spray_Shot4 : public Spray_Shot1 {
-
-public:
-
-	Spray_Shot4();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// SPRAY SHOT5 クラス（上3）
-class Spray_Shot5 : public Spray_Shot1 {
-
-public:
-
-	Spray_Shot5();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// SPRAY SHOT6 クラス（下2）
-class Spray_Shot6 : public Spray_Shot1 {
-
-public:
-
-	Spray_Shot6();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// SPRAY SHOT7 クラス（上2）
-class Spray_Shot7 : public Spray_Shot1 {
-
-public:
-
-	Spray_Shot7();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// VORTEX SHOT1 クラス（渦弾）
-class Vortex_Shot1 : public Shot {
-
-public:
-
-	Vortex_Shot1();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// VORTEX SHOT2 クラス
-class Vortex_Shot2 : public Vortex_Shot1 {
-
-public:
-
-	Vortex_Shot2();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// CHARGE SHOT クラス
+// Charge Shot クラス（拡大弾）
 class Charge_Shot : public Shot {
 
 private:
@@ -326,18 +260,18 @@ public:
 	void hit(int damage, int energy);
 };
 
-// PERIOD SHOT1 クラス（時限弾）
+// Period Shot1 クラス（時限弾）
 class Period_Shot1 : public Thing {
 
 private:
 
-	int shot_time; // 発射するまでの時間
-	int shot_count; // 発射する数を設定
+	int shot_time; // 発射までの時間
+	int shot_count; // 発射する数
 
 public:
 
 	Period_Shot1();
-	// 当たり判定は無い タイプを NONE で返す
+	// 当たり判定×　タイプを NONE で返す
 	ThingType GET_TYPE();
 	ThingType HIT_TYPE();
 	void move();
@@ -345,62 +279,46 @@ public:
 	void hit(int damage, int energy);
 };
 
-// PERIOD SHOT2 クラス（上）
+// Period Shot2 クラス（上・下）
 class Period_Shot2 : public Through_Shot {
+
+protected:
+
+	int sign;
 
 public:
 
 	Period_Shot2();
+	void SET_sign(int);
 	void move();
 	void draw();
 	void hit(int damage, int energy);
 };
 
-// PERIOD SHOT3 クラス（右）
+// Period Shot3 クラス（左・右）
 class Period_Shot3 : public Period_Shot2 {
 
 public:
 
 	Period_Shot3();
+	void SET_sign(int);
 	void move();
 	void draw();
 	void hit(int damage, int energy);
 };
 
-// PERIOD SHOT4 クラス（下）
-class Period_Shot4 : public Period_Shot2 {
-
-public:
-
-	Period_Shot4();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// PERIOD SHOT5 クラス（左）
-class Period_Shot5 : public Period_Shot2 {
-
-public:
-
-	Period_Shot5();
-	void move();
-	void draw();
-	void hit(int damage, int energy);
-};
-
-// HOMING SHOT クラス（追撃弾）
+// Homing Shot クラス（追尾弾）
 class Homing_Shot : public Shot {
 
 public:
 
 	Homing_Shot();
-	void move(); // 敵を追いかける
+	void move(); // 敵を追尾する
 	void draw();
 	void hit(int damage, int energy);
 };
 
-// PARABOLA SHOT クラス（追撃・放物線弾）
+// Parabola Shot クラス（追尾・放物線弾）
 class Parabola_Shot : public Shot {
 
 	// 放物線に関する変数
@@ -410,19 +328,19 @@ class Parabola_Shot : public Shot {
 
 public:
 
-	void SET_position(int, int); // 初期位置・座標を求める
 	Parabola_Shot();
+	void SET_position(int, int); // 初期位置・座標を求める
 	void move();
 	void draw();
 	void hit(int damage, int energy);
 };
 
-// ENEMY1 クラス（通常）
+// Enemy1 クラス（通常）
 class Enemy1 : public Thing {
 
 protected:
 
-	int count; // 爆破して 削除するまでの数値を入れる
+	int count; // 爆破して削除するまで　数値を入れる
 	int up_down; // 上下方向
 	bool count_flag; // 爆破フラグ
 
@@ -433,10 +351,10 @@ public:
 	ThingType HIT_TYPE(); // 当たる敵を PLAYER タイプと返す
 	void move();
 	void draw();
-	void hit(int damage, int energy); // ENEMY1~6まで共通設定
+	void hit(int damage, int energy); // ENEMY1～6まで共通設定
 };
 
-// ENEMY2 クラス（タフ）
+// Enemy2 クラス（タフ）
 class Enemy2 : public Enemy1 {
 
 public:
@@ -446,7 +364,7 @@ public:
 	void draw();
 };
 
-// ENEMY3 クラス（ベクトル）
+// Enemy3 クラス（ベクトル）
 class Enemy3 : public Enemy1 {
 
 public:
@@ -456,7 +374,7 @@ public:
 	void draw();
 };
 
-// ENEMY4 クラス（高速）
+// Enemy4 クラス（高速）
 class Enemy4 : public Enemy1 {
 
 public:
@@ -466,7 +384,7 @@ public:
 	void draw();
 };
 
-// ENEMY5 クラス（通常攻撃）
+// Enemy5 クラス（通常攻撃）
 class Enemy5 : public Enemy1 {
 
 public:
@@ -476,7 +394,7 @@ public:
 	void draw();
 };
 
-// ENEMY6 クラス（ベクトル攻撃）
+// Enemy6 クラス（ベクトル攻撃）
 class Enemy6 : public Enemy1 {
 
 public:
@@ -486,7 +404,7 @@ public:
 	void draw();
 };
 
-// ENEMY BOSS1 クラス（STAGE1~9まで共通）
+// Enemy Boss1 クラス（STAGE１～９まで共通）
 class Enemy_Boss1 : public Enemy1 {
 
 protected:
@@ -498,12 +416,12 @@ public:
 
 	Enemy_Boss1();
 	void move();
-	void life_draw(); // 体力の描画
+	void life_draw(); // 体力を描画する
 	void draw();
 	void hit(int damage, int energy);
 };
 
-// ENEMY BOSS2 クラス（STAGE10）
+// Enemy Boss2 クラス（STAGE１０）
 class Enemy_Boss2 : public Enemy_Boss1 {
 
 public:
@@ -514,7 +432,7 @@ public:
 	void draw();
 };
 
-// ENEMY SHOT1 クラス（ボス）
+// Enemy Shot1 クラス（ボス用）
 class Enemy_Shot1 : public Thing {
 
 public:
@@ -527,7 +445,7 @@ public:
 	void hit(int damage, int energy);
 };
 
-// ENEMY SHOT2 クラス（ENEMY5・6）
+// Enemy Shot2 クラス（ENEMY5・6用）
 class Enemy_Shot2 : public Enemy_Shot1 {
 
 public:
@@ -538,7 +456,7 @@ public:
 	void hit(int damage, int energy);
 };
 
-// HEAL1 クラス（体力回復）
+// Heal1 クラス（体力回復）
 class Heal1 : public Thing {
 
 public:
@@ -551,7 +469,7 @@ public:
 	void hit(int damage, int energy);
 };
 
-// HEAL2 クラス（特殊量回復）
+// Heal2 クラス（特殊量回復）
 class Heal2 : public Heal1 {
 
 public:
@@ -562,16 +480,17 @@ public:
 	void hit(int damage, int energy);
 };
 
-// GAME クラス
+// Game クラス
 class Game {
 
 	std::list <ThingPointa> thing_list; // Thing クラスのスマートポインタを list 型データ構造（thing_list）に入れる
 
 private:
 
-	int p_x; // バックの x 座標（ループ仕様）
-	int p_w; // バックの横幅
-	int add_s; // バックを高速で回す
+	// バック用変数
+	int p_x; // x 座標（ループ仕様）
+	int p_w; // 横幅
+	int add_s; // 速度
 
 	// 画像読込用変数
 	int Game_p; // バックの画像
@@ -585,27 +504,29 @@ private:
 	int Esc_p; // ESC:TITLE SPACE:REPLAY
 
 	// フラグ用変数
-	bool push_flag; // SPACE or BACK SPACE KEY用フラグ
+	bool push_flag; // SPACE or BACK SPACE 用フラグ
 	bool game_flag; // true でスタートする
-	bool boss_flag; // BOSS フラグ
+	bool boss_flag; // Boss フラグ
 	bool space_flag; // PUSH SPACE フラグ
 
 	// スコア記録用変数
 	int high_score; // ハイスコア（high_score < now_score の場合）
 	int now_score; // スコアに置換
-	int timer; // 経過時間を0にする
+	int timer; // タイマー
 	int now_time; // 残り時間を記録する
-	int start_time; // 1s 単位で計測する
+	int start_time; // １s 単位で計測する
 	int limit_time; // 制限時間
 
 public:
 
-	static const int WIDTH = 1200; // 画面の横幅
-	static const int HEIGHT = 600; // 画面の縦幅
-	void ADD_list(ThingPointa&); // Thing クラスのスマートポインタにリストを追加する
-	void ADD_score(int sc); // スコアの追加
-	bool PUSH_space(); // SPACE KEY の操作
-	bool PUSH_back(); // BACK SPACE の操作
+	// 画面用変数
+	static const int WIDTH = 1200; // 横幅
+	static const int HEIGHT = 600; // 縦幅
+
+	void ADD_list(ThingPointa&); // Thing クラス　スマートポインタにリスト（list）を追加する
+	void ADD_score(int sc); // スコアを追加する
+	bool PUSH_space(); // SPACE 操作
+	bool PUSH_back(); // BACK SPACE 操作
 
 	// スコアの記録を実装する関数
 	void LOAD_highscore(); // スコア読込
@@ -613,20 +534,22 @@ public:
 
 	void GAME_SET(); // 初期設定
 	void GAME_ALL(); // 分岐
+
 	void GAME_TITLE(); // タイトル画面
 	void GAME_SELECT(); // 操作説明
 	void GAME_PLAY(); // プレイ画面
 	void GAME_OVER(); // オーバー画面
 	void GAME_CLEAR(); // クリア画面
+
 	void GAME_END(); // 終了
 };
 
-Game* game; // GAME クラスのメモリを確保して実体（インスタンス）化する
+Game* game; // Game クラスのメモリを確保して実体（インスタンス）化する
 
 // Thing クラスの実装
 void Thing::remove() {
 
-	remove_flag = true; // 削除フラグを trueにする
+	remove_flag = true; // 削除フラグを true にする
 }
 
 Thing::Thing() {
@@ -637,20 +560,20 @@ Thing::Thing() {
 
 void Thing::SET_picture(const char* file_name, ThingType thing) {
 
-	// loaded_picture は0の場合　LoadGraph を実装
+	// loaded_picture は０の場合　LoadGraph を実装する
 	if (loaded_picture[thing] == 0) {
 
 		loaded_picture[thing] = LoadGraph(file_name);
 	}
 
-	hit_w = m_w; // 横幅を当たり判定に置換
-	hit_h = m_h; // 横幅を当たり判定に置換
-	hit_x = hit_y = 0; // 画像に対する左上座標を 0にする
+	hit_w = m_w; // 横幅　当たり判定に置く
+	hit_h = m_h; // 縦幅　当たり判定に置く
+	hit_x = hit_y = 0; // 当たり判定　左上座標を０にする
 }
 
 void Thing::SET_sound(const char* file_name, Sound sound) {
 
-	// loaded_sound は0の場合　LoadSoundMem を実装
+	// loaded_sound は０の場合　LoadSoundMem を実装する
 	if (loaded_sound[sound] == 0) {
 
 		loaded_sound[sound] = LoadSoundMem(file_name);
@@ -659,21 +582,21 @@ void Thing::SET_sound(const char* file_name, Sound sound) {
 
 void Thing::SET_position(int position_x, int position_y) {
 
-	m_x = position_x; // 置き換えた値を m_x（x 座標） に入れる
-	m_y = position_y; // 置き換えた値を m_y（y 座標）に入れる
+	m_x = position_x; // 設定値を m_x（x 座標） に入れる
+	m_y = position_y; // 設定値を m_y（y 座標）に入れる
 }
 
 void Thing::SET_hitarea(int h_x, int h_y, int h_w, int h_h) {
 
-	hit_x = h_x; // 相対的 x 座標を設定
-	hit_y = h_y; // 相対的 y 座標を設定
-	hit_w = h_w; // 横幅を設定
-	hit_h = h_h; // 縦幅を設定
+	hit_x = h_x; // 相対的 x 座標を設定する
+	hit_y = h_y; // 相対的 y 座標を設定する
+	hit_w = h_w; // 横幅を設定する
+	hit_h = h_h; // 縦幅を設定する
 }
 
 bool Thing::GET_remove() {
 
-	return remove_flag; // 削除フラグを返す
+	return remove_flag;
 }
 
 ThingType Thing::HIT_TYPE() {
@@ -683,7 +606,7 @@ ThingType Thing::HIT_TYPE() {
 
 void Thing::draw() {
 
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[GET_TYPE()], TRUE); // 座標位置に描画・TRUEは黒（初期設定）を透明色に
+	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[GET_TYPE()], TRUE); // 座標位置に描画する　TRUE は画像バックをクリアにする
 }
 
 void Thing::life_draw() {
@@ -691,7 +614,7 @@ void Thing::life_draw() {
 	if (0 < life_now) {
 
 		DrawExtendGraph(m_x, m_y - 15, m_x + 65, m_y - 10, loaded_picture[TYPE_EMPTY], TRUE);
-		DrawExtendGraph(m_x, m_y - 15, m_x + (65 * life_now) / life_max, m_y - 10, loaded_picture[TYPE_LIFE], TRUE); // 体力に伴い左へずれる
+		DrawExtendGraph(m_x, m_y - 15, m_x + (65 * life_now) / life_max, m_y - 10, loaded_picture[TYPE_LIFE], TRUE); // 体力の値で左へずれる
 	}
 }
 
@@ -712,6 +635,7 @@ bool Thing::HIT_test(ThingPointa& other) {
 	int y_1 = m_y + hit_y; // 当たり判定（y 座標）
 	int w_1 = hit_w; // 当たり判定（横幅）
 	int h_1 = hit_h; // 当たり判定（縦幅）
+
 	int x_2 = other->m_x + other->hit_x; // 対応する当たり判定（x 座標）
 	int y_2 = other->m_y + other->hit_y; // 対応する当たり判定（y 座標）
 	int w_2 = other->hit_w; // 対応する当たり判定（横幅）
@@ -726,27 +650,30 @@ bool Thing::HIT_test(ThingPointa& other) {
 	return false; // 上記以外は false に
 }
 
-// 以下↓ PLAYER クラスの実装
+// Player クラスの実装
 Player::Player() {
 
 	m_w = 80; // 横幅
 	m_h = 50; // 縦幅
 	m_s = 8; // 速度
-	SET_picture("PLAYER.png", TYPE_PLAYER); // 画像
+
+	// 画像を設定する
+	SET_picture("PLAYER.png", TYPE_PLAYER);
 	SET_picture("HEART.png", TYPE_HEART);
 	SET_picture("ENERGY.png", TYPE_ENERGY);
-	SET_position(150, 300); // x・y 座標の初期位置
-	SET_hitarea(10, 10, 70, 40); // 当たり判定設定
-	life_max = 5; // 初期ライフ設定
-	life_now = life_max; // 現在ライフに設定した値を置換
-	energy_max = 1; // 初期特殊力設定
-	energy_now = energy_max; // 現在特殊力に設定した値を置換
+
+	SET_position(150, 300); // x・y 座標を設定する
+	SET_hitarea(10, 10, 70, 40); // 当たり判定を設定する
+	life_max = 5; // 初期ライフを設定する
+	life_now = life_max; // 今のライフに初期ライフを置く
+	energy_max = 1; // 初期特殊力を設定する
+	energy_now = energy_max; // 今の特殊力に初期特殊力を置く
 	damage = 0; // 損害量
 	energy = 0; // 特殊量
-	shot_flag = false; // shot フラグを false に
-	beam_flag = false; // beam フラグを false に
-	dead_time = 0; // deat_time を0に設定（点滅用）
-	SET_sound("SHOT1.mp3", SOUND_SHOT1); // SHOT 音
+	shot_flag = false; // shot フラグを false にする
+	beam_flag = false; // beam フラグを false にする
+	dead_time = 0; // deat_time を０に設定（点滅用）
+	SET_sound("SHOT1.mp3", SOUND_SHOT1); // Shot 音
 	SET_sound("E ATTACK.mp3", SOUND_E_ATTACK); // 損害音
 }
 
@@ -762,7 +689,7 @@ ThingType Player::GET_TYPE() {
 
 void Player::move() {
 
-	// 点滅カウントを - 1する
+	// 点滅エフェクト　マイナスする
 	if (0 < dead_time) dead_time--;
 
 	// ポーズ（休止）フラグ false の場合
@@ -777,7 +704,7 @@ void Player::move() {
 			if (CheckHitKey(KEY_INPUT_UP)) m_y -= m_s; // ↑上
 			if (CheckHitKey(KEY_INPUT_DOWN)) m_y += m_s; // ↓下
 
-			// 壁に対する当たり判定設定
+			// 画面の当たり判定
 			if (m_x < 0) m_x = 0; // 画面左
 			if (Game::WIDTH < m_x + m_w) m_x = Game::WIDTH - m_w; // 画面右
 			if (m_y < 0) m_y = 0; // 画面上
@@ -789,17 +716,17 @@ void Player::move() {
 
 			if (!shot_flag) { // shot フラグ false の場合
 
-				ThingPointa shot(new Shot); // SHOT クラス作成　そのアドレスを Thing クラスのスマートポインタに渡す
-				shot->SET_position(m_x + m_w - 10, m_y + 25); // SHOT の初期位置設定
-				game->ADD_list(shot); // Thing リストに SHOT アドレス追加
-				PlaySoundMem(loaded_sound[SOUND_SHOT1], DX_PLAYTYPE_BACK); // SHOT音
+				ThingPointa shot(new Shot); // Shot クラス作成　そのアドレスを Thing クラスのスマートポインタに渡す
+				shot->SET_position(m_x + m_w - 10, m_y + 25); // Shot の初期位置を設定する
+				game->ADD_list(shot); // Thing リストに Shot アドレスを追加する
+				PlaySoundMem(loaded_sound[SOUND_SHOT1], DX_PLAYTYPE_BACK); // Shot 音
 			}
 		}
 
-		// 貫通弾（Ｍ）
-		else if (CheckHitKey(KEY_INPUT_M) && shot_count % 10 == 0) {
+		// 貫通弾（Ｔ）
+		else if (CheckHitKey(KEY_INPUT_T) && shot_count % 10 == 0) {
 
-			// 特殊量 4以上の場合 発射可
+			// 特殊量４以上の場合　発射可
 			if (4 <= energy_now) {
 
 				if (!shot_flag) {
@@ -815,7 +742,7 @@ void Player::move() {
 		// 光線（Ｃ）
 		else if (CheckHitKey(KEY_INPUT_C)) {
 
-			// 特殊量 5以上の場合 発射可
+			// 特殊量５以上の場合　発射可
 			if (5 <= energy_now) {
 
 				if (!beam_flag) { // beam フラグ false の場合
@@ -829,17 +756,17 @@ void Player::move() {
 			}
 		}
 
-		// スパイラル弾（Ｒ）
-		else if (CheckHitKey(KEY_INPUT_R) && shot_count % 6 == 0) {
+		// 渦弾（Ｖ）
+		else if (CheckHitKey(KEY_INPUT_V) && shot_count % 6 == 0) {
 
-			// 特殊量 3以上の場合 発射可
+			// 特殊量３以上の場合　発射可
 			if (3 <= energy_now) {
 
 				if (!shot_flag) {
 
-					ThingPointa rasen_shot(new Rasen_Shot);
-					rasen_shot->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(rasen_shot);
+					ThingPointa vortex_shot(new Vortex_Shot);
+					vortex_shot->SET_position(m_x + m_w - 10, m_y + 25);
+					game->ADD_list(vortex_shot);
 					PlaySoundMem(loaded_sound[SOUND_SHOT2], DX_PLAYTYPE_BACK);
 				}
 			}
@@ -848,67 +775,52 @@ void Player::move() {
 		// 散布弾（Ｓ）
 		else if (CheckHitKey(KEY_INPUT_S) && shot_count % 10 == 0) {
 
-			// 特殊量 9以上の場合 発射可
+			// 特殊量９以上の場合　発射可
 			if (9 <= energy_now) {
 
 				if (!shot_flag) {
 
-					ThingPointa spray_shot1(new Spray_Shot1);
-					spray_shot1->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(spray_shot1);
+					for (int i = 0; i < 7; i++) { // ７個発射する
 
-					ThingPointa spray_shot2(new Spray_Shot2);
-					spray_shot2->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(spray_shot2);
+						ThingPointa spray_shot1(new Spray_Shot);
+						spray_shot1->SET_position(m_x + m_w - 10, m_y + 25);
+						spray_shot1->SET_angle(3.14 * (3 - i) / 18); // 散布する角度（３０°・２０°・１０°・０°）を上下に設定する
+						game->ADD_list(spray_shot1);
+					}
 
-					ThingPointa spray_shot3(new Spray_Shot3);
-					spray_shot3->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(spray_shot3);
-
-					ThingPointa spray_shot4(new Spray_Shot4);
-					spray_shot4->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(spray_shot4);
-
-					ThingPointa spray_shot5(new Spray_Shot5);
-					spray_shot5->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(spray_shot5);
-
-					ThingPointa spray_shot6(new Spray_Shot6);
-					spray_shot6->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(spray_shot6);
-
-					ThingPointa spray_shot7(new Spray_Shot7);
-					spray_shot7->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(spray_shot7);
-					PlaySoundMem(loaded_sound[SOUND_SHOT2], DX_PLAYTYPE_BACK); // SHOT音
+					PlaySoundMem(loaded_sound[SOUND_SHOT2], DX_PLAYTYPE_BACK); // Shot 音
 				}
 			}
 		}
 
-		// 渦弾（Ｖ）
-		else if (CheckHitKey(KEY_INPUT_V) && shot_count % 4 == 0) {
+		// 螺旋弾（Ｒ）
+		else if (CheckHitKey(KEY_INPUT_R) && shot_count % 4 == 0) {
 
-			// 特殊量 10の場合 発射可
+			// 特殊量１０の場合　発射可
 			if (10 <= energy_now) {
 
 				if (!shot_flag) {
 
-					ThingPointa vortex_Shot1(new Vortex_Shot1);
-					vortex_Shot1->SET_position(m_x + m_w - 10, m_y + 35);
-					game->ADD_list(vortex_Shot1);
+					// 上
+					ThingPointa rasen_Shot_1(new Rasen_Shot);
+					rasen_Shot_1->SET_position(m_x + m_w - 10, m_y + 25);
+					rasen_Shot_1->SET_sign(1);
+					game->ADD_list(rasen_Shot_1);
 
-					ThingPointa vortex_Shot2(new Vortex_Shot2);
-					vortex_Shot2->SET_position(m_x + m_w - 10, m_y + 25);
-					game->ADD_list(vortex_Shot2);
+					// 下
+					ThingPointa rasen_Shot_2(new Rasen_Shot);
+					rasen_Shot_2->SET_position(m_x + m_w - 10, m_y + 25);
+					rasen_Shot_2->SET_sign(-1);
+					game->ADD_list(rasen_Shot_2);
 					PlaySoundMem(loaded_sound[SOUND_SHOT1], DX_PLAYTYPE_BACK);
 				}
 			}
 		}
 
-		// CHAGE 弾（Ｏ）
+		// 拡大弾（Ｏ）
 		else if (CheckHitKey(KEY_INPUT_O)) {
 
-			// 特殊量 2以上の場合 発射可
+			// 特殊量２以上の場合　発射可
 			if (2 <= energy_now) {
 
 				// 発射準備時間
@@ -927,7 +839,7 @@ void Player::move() {
 		// 時限弾（Ｚ）
 		else if (CheckHitKey(KEY_INPUT_Z)) {
 
-			// 特殊量 8以上の場合 発射可
+			// 特殊量８以上の場合　発射可
 			if (8 <= energy_now) {
 
 				if (!shot_flag) {
@@ -935,19 +847,19 @@ void Player::move() {
 					ThingPointa period_shot1(new Period_Shot1);
 					period_shot1->SET_position(m_x + m_w - 10, m_y + 25);
 					game->ADD_list(period_shot1);
-					shot_flag = true; // 連打する
+					shot_flag = true; // 連打仕様
 					PlaySoundMem(loaded_sound[SOUND_SHOT1], DX_PLAYTYPE_BACK);
 				}
 			}
 		}
 
-		// 追撃（直線）弾（Ｈ）
+		// 追尾弾（Ｈ）
 		else if (CheckHitKey(KEY_INPUT_H) && shot_count % 28 == 0) {
 
-			// 特殊量 7以上の場合 発射可
+			// 特殊量７以上の場合　発射可
 			if (7 <= energy_now) {
 
-				// 残存する敵がいる場合
+				// 残る敵◯の場合
 				if (0 < enemy_num) {
 
 					if (!shot_flag) {
@@ -961,13 +873,13 @@ void Player::move() {
 			}
 		}
 
-		// 追撃・放物線弾（Ｐ）
+		// 追尾・放物線弾（Ｐ）
 		else if (CheckHitKey(KEY_INPUT_P) && shot_count % 28 == 0) {
 
-			// 特殊量 6以上の場合 発射可
+			// 特殊量６以上の場合　発射可
 			if (6 <= energy_now) {
 
-				// 残存する敵がいる場合
+				// 残る敵◯の場合
 				if (0 < enemy_num) {
 
 					if (!shot_flag) {
@@ -981,22 +893,24 @@ void Player::move() {
 			}
 		}
 
-		// 何もしない場合
+		// 全ての弾を使用可にする
+		else if (CheckHitKey(KEY_INPUT_Q)) energy_now = 10;
+
 		else {
 
 			shot_flag = false; // shot フラグを falseに
 			beam_flag = false; // beam フラグ を false に
-			charge_time = 0; // charge_time を 0 に
+			charge_time = 0; // charge_time を０に
 		}
 	}
 
-	// ライフ 0になった場合
+	// ライフ０になった場合
 	if (life_now <= 0) {
 
 		scene = 3; // オーバー画面へ
-		StopSoundMem(Play_m); // プレイ中の音を停止
-		StopSoundMem(Boss_m); // ボス中の音を停止
-		PlaySoundMem(Over_m, DX_PLAYTYPE_LOOP); // オーバー音
+		StopSoundMem(Play_m); // プレイ中の音を停止する
+		StopSoundMem(Boss_m); // ボス中の音を停止する
+		PlaySoundMem(Over_m, DX_PLAYTYPE_LOOP); // オーバー中の音を再生する
 	}
 
 	// ライフの上限設定
@@ -1010,7 +924,7 @@ void Player::heart_draw() {
 
 	if (0 < life_now) {
 
-		// 現在の体力によりハートの数を調整する
+		// 今の体力によりハートの数を調整する
 		for (int i = 0; i < life_now; i++) {
 
 			DrawExtendGraph(5 + i * 45, 5, 55 + i * 45, 45, loaded_picture[TYPE_HEART], TRUE);
@@ -1022,42 +936,61 @@ void Player::energy_draw() {
 
 	if (0 < energy_now) {
 
-		// 現在の特殊量によりハートの数を調整する
+		// 今の特殊量によりハートの数を調整する
 		for (int i = 0; i < energy_now; i++) {
 
 			DrawExtendGraph(460 + i * 45, 5, 510 + i * 45, 45, loaded_picture[TYPE_ENERGY], TRUE);
 		}
 	}
 
-	// 現在の特殊量により（ハートの上に）文字を描画
-	DrawFormatString(480, 15, GetColor(255, 255, 255), "B");
+	// 今の特殊量により（ハートの上に）文字を描画する
+	int color = GetColor(255, 255, 255); // 色
+	DrawFormatString(480, 15, color, "B");
 
-	// 特殊量2~10以上の場合
-	if (2 <= energy_now)		DrawFormatString(525, 15, GetColor(255, 255, 255), "O");
+	// 特殊量２～１０以上の場合
+	if (2 <= energy_now) {
+		DrawFormatString(525, 15, color, "O");
+	}
 
-	if (3 <= energy_now)		DrawFormatString(570, 15, GetColor(255, 255, 255), "R");
+	if (3 <= energy_now) {
+		DrawFormatString(570, 15, color, "V");
+	}
 
-	if (4 <= energy_now)		DrawFormatString(615, 15, GetColor(255, 255, 255), "M");
-	
-	if (5 <= energy_now)		DrawFormatString(660, 15, GetColor(255, 255, 255), "C");
-	
-	if (6 <= energy_now)		DrawFormatString(705, 15, GetColor(255, 255, 255), "P");
-	
-	if (7 <= energy_now)		DrawFormatString(750, 15, GetColor(255, 255, 255), "H");
-	
-	if (8 <= energy_now)		DrawFormatString(795, 15, GetColor(255, 255, 255), "Z");
-	
-	if (9 <= energy_now)		DrawFormatString(840, 15, GetColor(255, 255, 255), "S");
-	
-	if (10 == energy_now)	DrawFormatString(885, 15, GetColor(255, 255, 255), "V");
+	if (4 <= energy_now) {
+		DrawFormatString(615, 15, color, "M");
+	}
+
+	if (5 <= energy_now) {
+		DrawFormatString(660, 15, color, "C");
+	}
+
+	if (6 <= energy_now) {
+		DrawFormatString(705, 15, color, "P");
+	}
+
+	if (7 <= energy_now) {
+		DrawFormatString(750, 15, color, "H");
+	}
+
+	if (8 <= energy_now) {
+		DrawFormatString(795, 15, color, "Z");
+	}
+
+	if (9 <= energy_now) {
+		DrawFormatString(840, 15, color, "S");
+	}
+
+	if (10 <= energy_now) {
+		DrawFormatString(885, 15, color, "R");
+	}
 }
 
 void Player::draw() {
 
-	heart_draw(); // 体力
-	energy_draw(); // 特殊量
+	heart_draw(); // 体力を描画する
+	energy_draw(); // 特殊量を描画する
 
-	if (dead_time % 5 == 0) Thing::draw(); // 5で割り切れる場合 点滅して描画する
+	if (dead_time % 5 == 0) Thing::draw(); // ５で割り切れる場合　点滅して描画する
 }
 
 void Player::hit(int damage, int energy) {
@@ -1065,8 +998,8 @@ void Player::hit(int damage, int energy) {
 	// 敵の場合
 	if (dead_time <= 0 && 0 < damage) {
 
-		dead_time = 50; // 点滅カウントを 50に
-		life_now -= damage; // 現在の体力より 損害量をマイナスする
+		dead_time = 50; // 点滅カウントを５０に
+		life_now -= damage; // 体力をマイナスする
 		PlaySoundMem(loaded_sound[SOUND_E_ATTACK], DX_PLAYTYPE_BACK); // 損害音
 	}
 
@@ -1077,7 +1010,7 @@ void Player::hit(int damage, int energy) {
 	if (energy < 0) energy_now -= energy; // 特殊量の増加
 }
 
-// SHOT クラス（通常弾）の実装
+// Shot クラス（通常弾）の実装
 Shot::Shot() {
 
 	m_w = 12; // 横幅
@@ -1100,7 +1033,7 @@ ThingType Shot::HIT_TYPE() {
 
 void Shot::move() {
 
-	if (!pause_flag) m_x += m_s; // 速度を10にする
+	if (!pause_flag) m_x += m_s; // 速度を１０にする
 
 	if (Game::WIDTH < m_x) remove(); // 画面左で削除する
 }
@@ -1116,7 +1049,7 @@ void Shot::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// THROUGH SHOT クラス（貫通弾）の実装
+// Through Shot クラス（貫通弾）の実装
 Through_Shot::Through_Shot() {
 
 	m_w = 34;
@@ -1129,7 +1062,7 @@ Through_Shot::Through_Shot() {
 
 void Through_Shot::move() {
 
-	if (!pause_flag) m_x += m_s; // 速度を20にする
+	if (!pause_flag) m_x += m_s; // 速度を２０にする
 
 	if (Game::WIDTH < m_x + m_w) remove();
 }
@@ -1141,14 +1074,14 @@ void Through_Shot::draw() {
 
 void Through_Shot::hit(int damage, int energy) {
 
-	// 貫通するため remove()　は実装しない
+	// 貫通する為 remove()関数は実装しない
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// BEAM クラス（光線）の実装
+// Beam クラス（光線）の実装
 Beam::Beam() {
 
-	m_w = 0; // 増加するため 初期は0に
+	m_w = 0; // 初期は０に
 	m_h = 80;
 	m_s = 15;
 	damage = 1;
@@ -1177,30 +1110,30 @@ void Beam::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// RASEN SHOT クラス（スパイラル弾）の実装
-Rasen_Shot::Rasen_Shot() {
+// Vortex Shot クラス（渦弾）の実装
+Vortex_Shot::Vortex_Shot() {
 
 	m_w = 34;
 	m_h = 15;
 	damage = 10;
-	angle = 0; // 角度を0に
-	rad = 0; // 半径を0に
+	angle = 0; // 角度を０に
+	rad = 0; // 半径を０に
 }
 
-void Rasen_Shot::SET_position(int position_x, int position_y) {
+void Vortex_Shot::SET_position(int position_x, int position_y) {
 
 	center_x = position_x;
 	center_y = position_y;
 }
 
-void Rasen_Shot::move() {
+void Vortex_Shot::move() {
 
 	if (!pause_flag) {
 
-		rad += 0.8; // 円の半径に加え続ける
-		angle += 8 / rad; // 角度を加え続ける（角速度を調整）
+		rad += 0.8; // 円の半径にプラスする
+		angle += 8 / rad; // 角度をプラスする（角速度を調整）
 
-		// スパイラルする計算
+		// 回る計算
 		m_x = center_x + (float)rad * cos(angle);
 		m_y = center_y + (float)rad * sin(angle);
 	}
@@ -1208,295 +1141,99 @@ void Rasen_Shot::move() {
 	if (Game::WIDTH < m_x) remove();
 }
 
-void Rasen_Shot::draw() {
+void Vortex_Shot::draw() {
 
 	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
+}
+
+void Vortex_Shot::hit(int damage, int energy) {
+
+	remove();
+	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
+}
+
+// Spray Shot クラス（散布弾）の実装
+Spray_Shot::Spray_Shot() {
+
+	m_w = 34;
+	m_h = 15;
+	m_s = 10;
+	damage = 5;
+	angle = 0;
+}
+
+void Spray_Shot::SET_angle(float a) {
+
+	angle = a; // 角度に置く
+}
+
+void Spray_Shot::move() {
+
+	if (!pause_flag) {
+
+		m_x += m_s * cos(angle);
+		m_y += m_s * sin(angle);
+	}
+	if (Game::WIDTH < m_x) remove();
+}
+
+void Spray_Shot::draw() {
+
+	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
+}
+
+void Spray_Shot::hit(int damage, int energy) {
+
+	remove();
+	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
+}
+
+// Rasen Shot1・2 クラス（螺旋弾）の実装
+Rasen_Shot::Rasen_Shot() {
+
+	m_w = 12;
+	m_h = 12;
+	m_s = 8;
+	damage = 1;
+	angle = 0; // 角度を０に
+	sign = 0;
+}
+
+void Rasen_Shot::SET_position(int position_x, int position_y) {
+
+	m_x = position_x;
+	center_y = position_y;
+}
+
+void Rasen_Shot::SET_sign(int s) {
+
+	sign = s; // 符号に置く
+}
+
+void Rasen_Shot::move() {
+
+	if (!pause_flag) {
+
+		angle += 0.2;
+		m_x += m_s;
+		m_y = center_y - sign * 60 * sin(angle); // サインカーブの応用
+	}
+
+	if (Game::WIDTH < m_x) remove();
+}
+
+void Rasen_Shot::draw() {
+
+	// 大きさを随時変更する
+	DrawExtendGraph(m_x, m_y, m_x + m_w * (1.2 - sign * cos(angle)) / 2, m_y + m_h * (1.2 - sign * cos(angle)) / 2, loaded_picture[TYPE_SHOT1], TRUE);
 }
 
 void Rasen_Shot::hit(int damage, int energy) {
 
-	remove();
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// SPRAY SHOT1~7 クラス（散布弾）の実装
-Spray_Shot1::Spray_Shot1() {
-
-	m_w = 34;
-	m_h = 15;
-	m_s = 10;
-	damage = 5;
-}
-
-void Spray_Shot1::move() {
-
-	if (!pause_flag) m_x += m_s;
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Spray_Shot1::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
-}
-
-void Spray_Shot1::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-Spray_Shot2::Spray_Shot2() {
-
-	m_w = 34;
-	m_h = 15;
-	m_s = 10;
-	damage = 5;
-}
-
-void Spray_Shot2::move() {
-
-	if (!pause_flag) {
-
-		// 角度30度の三角形
-		m_x += m_s * cos(3.14 / 6);
-		m_y += m_s * sin(3.14 / 6);
-	}
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Spray_Shot2::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
-}
-
-void Spray_Shot2::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-Spray_Shot3::Spray_Shot3() {
-
-	m_w = 34;
-	m_h = 15;
-	m_s = 10;
-	damage = 5;
-}
-
-void Spray_Shot3::move() {
-
-	if (!pause_flag) {
-
-		// 角度30度の三角形
-		m_x += m_s * cos(3.14 / 6);
-		m_y -= m_s * sin(3.14 / 6);
-	}
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Spray_Shot3::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
-}
-
-void Spray_Shot3::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-Spray_Shot4::Spray_Shot4() {
-
-	m_w = 34;
-	m_h = 15;
-	m_s = 10;
-	damage = 5;
-}
-
-void Spray_Shot4::move() {
-
-	if (!pause_flag) {
-
-		// 角度10度の三角
-		m_x += m_s * cos(3.14 / 18);
-		m_y += m_s * sin(3.14 / 18);
-	}
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Spray_Shot4::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
-}
-
-void Spray_Shot4::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-Spray_Shot5::Spray_Shot5() {
-
-	m_w = 34;
-	m_h = 15;
-	m_s = 10;
-	damage = 5;
-}
-
-void Spray_Shot5::move() {
-
-	if (!pause_flag) {
-
-		// 角度10度の三角形
-		m_x += m_s * cos(3.14 / 18);
-		m_y -= m_s * sin(3.14 / 18);
-	}
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Spray_Shot5::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
-}
-
-void Spray_Shot5::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-Spray_Shot6::Spray_Shot6() {
-
-	m_w = 34;
-	m_h = 15;
-	m_s = 10;
-	damage = 5;
-}
-
-void Spray_Shot6::move() {
-
-	if (!pause_flag) {
-
-		// 角度20度の三角形
-		m_x += m_s * cos(3.14 / 9);
-		m_y += m_s * sin(3.14 / 9);
-	}
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Spray_Shot6::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
-}
-
-void Spray_Shot6::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-Spray_Shot7::Spray_Shot7() {
-
-	m_w = 34;
-	m_h = 15;
-	m_s = 10;
-	damage = 5;
-}
-
-void Spray_Shot7::move() {
-
-	if (!pause_flag) {
-
-		// 角度20度の三角形
-		m_x += m_s * cos(3.14 / 9);
-		m_y -= m_s * sin(3.14 / 9);
-	}
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Spray_Shot7::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
-}
-
-void Spray_Shot7::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-// VORTEX SHOT1・2 クラス（渦弾）の実装
-Vortex_Shot1::Vortex_Shot1() {
-
-	m_w = 13;
-	m_h = 13;
-	m_s = 8;
-	damage = 1;
-	angle = 0; // 角度を0に
-}
-
-void Vortex_Shot1::move() {
-
-	if (!pause_flag) {
-
-		angle += 0.01;
-		m_x += m_s;
-		m_y = m_y + 10 * cos(angle * 16); // コサインカーブの応用
-	}
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Vortex_Shot1::draw() {
-
-	// 渦状に見せるために大きさを随時変える
-	DrawExtendGraph(m_x, m_y, m_x + m_w * (1 + cos(angle * 16)) / 2, m_y + m_h * (1 + cos(angle * 16)) / 2, loaded_picture[TYPE_SHOT1], TRUE);
-}
-
-void Vortex_Shot1::hit(int damage, int energy) {
-
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-Vortex_Shot2::Vortex_Shot2() {
-
-	m_w = 13;
-	m_h = 13;
-	m_s = 8;
-	damage = 1;
-	angle = 0;
-}
-
-void Vortex_Shot2::move() {
-
-	if (!pause_flag) {
-
-		angle += 0.01;
-		m_x += m_s;
-		m_y = m_y - 10 * cos(angle * 16);
-	}
-
-	if (Game::WIDTH < m_x) remove();
-}
-
-void Vortex_Shot2::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w * (1 - cos(angle * 16)) / 2, m_y + m_h * (1 - cos(angle * 16)) / 2, loaded_picture[TYPE_SHOT1], TRUE);
-}
-
-void Vortex_Shot2::hit(int damage, int energy) {
-
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-// CHARGE SHOT クラス（拡大弾）の実装
+// Charge Shot クラス（拡大弾）の実装
 Charge_Shot::Charge_Shot() {
 
 	m_w = 0;
@@ -1504,7 +1241,7 @@ Charge_Shot::Charge_Shot() {
 	m_s = 15;
 	damage = 0;
 	SET_picture("CHARGE SHOT.png", TYPE_CHARGE_SHOT);
-	SET_sound("CHARGE.mp3", SOUND_CHARGE); // CHARGE中の音
+	SET_sound("CHARGE.mp3", SOUND_CHARGE); // CHARGE 中の音
 	SET_sound("CHARGE SHOT.mp3", SOUND_CHARGE_SHOT); // 発射音
 	charge_flag = false; // charge フラグを false に
 }
@@ -1515,22 +1252,22 @@ void Charge_Shot::move() {
 
 		if (CheckHitKey(KEY_INPUT_O)) {
 
-			// 攻撃力MAXを50とする（初期損害量は0にしているため）
+			// アタックMAXを５０にする（初期損害量は０にしているため）
 			if (damage < 50) {
 
 				damage++;
 
 				m_x += 1;
 				m_y -= 2;
-				m_w = 2 * damage; // 損害量の増加に伴い 大きくなる
+				m_w = 2 * damage; // 損害量に伴い大きくなる
 				m_h = 4 * damage;
 
-				// 当たり判定の誤差訂正
+				// 当たり判定の誤差訂正をする
 				hit_w = m_w + 20;
 				hit_h = m_h;
 			}
 
-			// 損害量 50未満の場合
+			// 損害量５０未満の場合
 			else {
 
 				charge_flag = true;
@@ -1539,7 +1276,7 @@ void Charge_Shot::move() {
 			}
 		}
 
-		// Ｏを押していない場合
+		// 「Ｏ」を押していない場合
 		else {
 
 			charge_flag = true;
@@ -1548,20 +1285,20 @@ void Charge_Shot::move() {
 		}
 	}
 
-	else if (!pause_flag) m_x += m_s; // 速度を15にする
+	else if (!pause_flag) m_x += m_s; // 速度を１５にする
 
 	if (Game::WIDTH < m_x) remove();
 }
 
 void Charge_Shot::draw() {
 
-	// angle の値を2で割り 余り0場合 描画する
+	// angle の値を２で割り 余り０場合　描画する
 	if ((int)angle % 2 == 0) {
 
 		DrawRotaGraph((2 * m_x + m_w) / 2, (2 * m_y + m_h) / 2, (double)m_w / 50, angle, loaded_picture[TYPE_CHARGE_SHOT], TRUE);
 	}
 
-	if (!pause_flag) angle += 30; // angle の値に35足し続ける
+	if (!pause_flag) angle += 30; // angle の値に３５足し続ける
 }
 
 void Charge_Shot::hit(int damage, int energy) {
@@ -1571,17 +1308,17 @@ void Charge_Shot::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// PERIOD SHOT1 クラス（時限弾）の実装
+// Period Shot1 クラス（時限弾）の実装
 Period_Shot1::Period_Shot1() {
 
 	m_w = 15;
 	m_h = 15;
 	m_s = 12;
 	damage = 0;
-	shot_time = 30; // 発射するまでの時間を30に
-	shot_count = 1; // 5回発射するために 初期は1に
+	shot_time = 30; // 発射するまでの時間を３０に
+	shot_count = 1; // ５回発射するために 初期は１に
 	SET_picture("SHOT3.png", TYPE_SHOT3);
-	SET_sound("P ATTACK.mp3", SOUND_P_ATTACK); 
+	SET_sound("P ATTACK.mp3", SOUND_P_ATTACK);
 }
 
 ThingType Period_Shot1::GET_TYPE() {
@@ -1591,7 +1328,7 @@ ThingType Period_Shot1::GET_TYPE() {
 
 ThingType Period_Shot1::HIT_TYPE() {
 
-	return TYPE_NONE; // 本体には当たり判定は無い
+	return TYPE_NONE; // 本体には当たり判定×
 }
 
 void Period_Shot1::move() {
@@ -1602,36 +1339,39 @@ void Period_Shot1::move() {
 
 		if (shot_time < 0) {
 
-			// 5回発射
+			// ５回発射
 			if (shot_time % 10 == 0 && shot_count <= 5) {
 
-				// 当たり判定有りの弾を発射する
-				// 上方向
+				// 当たり判定◯　弾を発射する
+				// 下方向
 				ThingPointa period_shot2(new Period_Shot2());
-				game->ADD_list(period_shot2); //
+				game->ADD_list(period_shot2);
+				period_shot2->SET_sign(1);
 				period_shot2->SET_position(m_x + 1, m_y - 10);
 
 				// 右方向
 				ThingPointa period_shot3(new Period_Shot3());
 				game->ADD_list(period_shot3);
+				period_shot3->SET_sign(1);
 				period_shot3->SET_position(m_x - 5, m_y + 2);
 
-				// 下方向
-				ThingPointa period_shot4(new Period_Shot4());
+				// 上方向
+				ThingPointa period_shot4(new Period_Shot2());
 				game->ADD_list(period_shot4);
-				period_shot4->SET_position(m_x + 1, m_y - 2);
+				period_shot4->SET_sign(-1);
+				period_shot4->SET_position(m_x + 1, m_y - 10);
 
 				// 左方向
-				ThingPointa period_shot5(new Period_Shot5());
-				game->ADD_list(period_shot5); //
-				period_shot5->SET_position(m_x - 10, m_y + 2);
-
+				ThingPointa period_shot5(new Period_Shot3());
+				game->ADD_list(period_shot5);
+				period_shot5->SET_position(m_x - 12, m_y + 2);
+				period_shot5->SET_sign(-1);
 				PlaySoundMem(loaded_sound[SOUND_SHOT2], DX_PLAYTYPE_BACK);
 
 				shot_count++;
 			}
 
-			if (5 < shot_count) remove(); // 5回発射で削除する
+			if (5 < shot_count) remove(); // ５回目で削除する
 		}
 
 		shot_time--;
@@ -1643,23 +1383,29 @@ void Period_Shot1::draw() {
 	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT3], TRUE);
 }
 
-void Period_Shot1::hit(int damage, int energy) {}
+void Period_Shot1::hit(int damage, int energy) {} // 当たり判定×
 
-// PERIOD SHOT2（上）クラスの実装
+// Period Shot2（上下）クラスの実装
 Period_Shot2::Period_Shot2() {
 
 	m_w = 15;
 	m_h = 34;
 	m_s = 20;
 	damage = 5;
+	sign = 0;
 	SET_picture("SHOT4.png", TYPE_SHOT4);
+}
+
+void Period_Shot2::SET_sign(int s) {
+
+	sign = s;
 }
 
 void Period_Shot2::move() {
 
-	if (!pause_flag) m_y -= m_s;
+	if (!pause_flag) m_y += sign * m_s;
 
-	if (m_y + m_h < 0) remove();
+	if (m_y + m_h < 0 || Game::HEIGHT < m_y) remove();
 }
 
 void Period_Shot2::draw() {
@@ -1673,20 +1419,26 @@ void Period_Shot2::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// PERIOD SHOT3（右）クラスの実装
+// Period Shot3（左右）クラスの実装
 Period_Shot3::Period_Shot3() {
 
 	m_w = 34;
 	m_h = 15;
 	m_s = 20;
 	damage = 5;
+	sign = 0;
+}
+
+void Period_Shot3::SET_sign(int s) {
+
+	sign = s;
 }
 
 void Period_Shot3::move() {
 
-	if (!pause_flag) m_x += m_s;
+	if (!pause_flag) m_x += sign * m_s;
 
-	if (Game::WIDTH < m_x) remove();
+	if (Game::WIDTH < m_x || m_x + m_w < 0) remove();
 }
 
 void Period_Shot3::draw() {
@@ -1700,85 +1452,32 @@ void Period_Shot3::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// PERIOD SHOT4（下）クラスの実装
-Period_Shot4::Period_Shot4() {
-
-	m_w = 15;
-	m_h = 34;
-	m_s = 20;
-	damage = 5;
-}
-
-void Period_Shot4::move() {
-
-	if (!pause_flag) m_y += m_s;
-
-	if (Game::HEIGHT < m_y) remove();
-}
-
-void Period_Shot4::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT4], TRUE);
-}
-
-void Period_Shot4::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-// PERIOD SHOT5（左）クラスの実装
-Period_Shot5::Period_Shot5() {
-
-	m_w = 34;
-	m_h = 15;
-	m_s = 20;
-	damage = 5;
-}
-
-void Period_Shot5::move() {
-
-	if (!pause_flag) m_x -= m_s;
-
-	if (m_x + m_w < 0) remove();
-}
-
-void Period_Shot5::draw() {
-
-	DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_SHOT2], TRUE);
-}
-
-void Period_Shot5::hit(int damage, int energy) {
-
-	remove();
-	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
-}
-
-// HORMING SHOT クラス（追撃弾）の実装
+// Homing Shot クラス（追尾弾）の実装
 Homing_Shot::Homing_Shot() {
 
 	m_w = 12;
 	m_h = 12;
 	m_s = 10;
 	damage = 20;
-	shot_s = 10; // shot_s を8にする
+	shot_s = 10; // shot_s を10にする
 }
 
 void Homing_Shot::move() {
 
 	if (!pause_flag) {
 
-		//残存する敵がいる場合
+		// 残る敵◯
 		if (0 < enemy_num) {
 
 			// 追尾する計算
 			// sqrt() は絶対値の計算
 			// pow() はべき乗の計算
+			// 一定の速度で追尾する
 			m_x += ((enemy_x - m_x) / sqrt(pow(enemy_x - m_x, 2) + pow(enemy_y - m_y, 2))) * shot_s;
 			m_y += ((enemy_y - m_y) / sqrt(pow(enemy_x - m_x, 2) + pow(enemy_y - m_y, 2))) * shot_s;
 		}
 
-		else m_x += m_s; // 残存する敵がいない場合 右方向へ
+		else m_x += m_s; // 残る敵× 右方向へ
 	}
 
 	if (Game::WIDTH < m_x) remove();
@@ -1795,48 +1494,50 @@ void Homing_Shot::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// PARABOLA SHOT クラス（追撃・放物線弾）の実装
+// Parabola Shot クラス（追尾・放物線弾）の実装
+Parabola_Shot::Parabola_Shot() {
+
+	m_w = 12;
+	m_h = 12;
+	damage = 50;
+	m_s = 0; // shot_s を 0に
+}
+
 void Parabola_Shot::SET_position(int position_x, int position_y) {
 
 	center_x = position_x;
 	center_y = position_y;
 
-	// 行列計算により三点の座標を求める
+	// 行列計算で三点の座標を求める
 	float frame = (enemy_x - center_x) / (8 + enemy_s);
 
+	// 弾・敵を入れる３点の座標
 	float x_1 = center_x;
 	float x_2 = enemy_x - enemy_s * frame;
 	float x_3 = center_x + 1;
 
 	float y_1 = center_y;
 	float y_2 = enemy_y;
-	float y_3 = center_y - tan(3.14 / 3);
+	float y_3 = center_y - tan(3.14 / 3); // 角度６０°で上昇する
 
 	float det_A = -(x_1 - x_2) * (x_2 - x_3) * (x_3 - x_1);
 	float det_a = y_1 * x_2 + y_2 * x_3 + y_3 * x_1 - x_2 * y_3 - x_3 * y_1 - x_1 * y_2;
 	float det_b = pow(x_1, 2) * y_2 + pow(x_2, 2) * y_3 + pow(x_3, 2) * y_1 - y_1 * pow(x_2, 2) - y_2 * pow(x_3, 2) - y_3 * pow(x_1, 2);
 	float det_c = pow(x_1, 2) * x_2 * y_3 + pow(x_2, 2) * x_3 * y_1 + pow(x_3, 2) * x_1 * y_2 - y_1 * x_2 * pow(x_3, 2) - y_2 * x_3 * pow(x_1, 2) - y_3 * x_1 * pow(x_2, 2);
 
+	// クラメルによる計算
 	a = det_a / det_A;
 	b = det_b / det_A;
 	c = det_c / det_A;
-}
-
-Parabola_Shot::Parabola_Shot() {
-
-	m_w = 12;
-	m_h = 12;
-	damage = 50;
-	shot_s = 0; // shot_s を0に
 }
 
 void Parabola_Shot::move() {
 
 	if (!pause_flag) {
 
-		shot_s += 8;
-		m_x = center_x + shot_s;
-		m_y = a * pow(m_x, 2) + b * m_x + c; // 放物線に描画
+		m_s += 8;
+		m_x = center_x + m_s;
+		m_y = a * pow(m_x, 2) + b * m_x + c; // 放物線に描画する
 	}
 }
 
@@ -1851,7 +1552,7 @@ void Parabola_Shot::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_P_ATTACK], DX_PLAYTYPE_BACK);
 }
 
-// ENEMY1~6クラスの実装
+// ENEMY1～6クラスの実装
 Enemy1::Enemy1() {
 
 	m_w = 80;
@@ -1861,11 +1562,11 @@ Enemy1::Enemy1() {
 	if (stage <= 6) m_s = 8;
 	if (7 <= stage) m_s = 10;
 
-	life_max = 10; // 体力10
-	life_now = life_max; // 設定体力を現在の体力に置換
-	damage = 1; // 損害量1
-	energy = 0; // 特殊量0
-	count = 0; // 体力 != 0 で count を0に
+	life_max = 10; // 体力１０
+	life_now = life_max; // 設定体力を現在の体力に入れる
+	damage = 1; // 損害量１
+	energy = 0; // 特殊量０
+	count = 0; // 体力 != 0 で count を０に
 	count_flag = false; // 体力 != 0 で count フラグは false に
 	SET_picture("ENEMY1.png", TYPE_ENEMY1);
 	SET_picture("BURN.png", TYPE_BURN);
@@ -1885,9 +1586,9 @@ ThingType Enemy1::HIT_TYPE() {
 
 void Enemy1::move() {
 
-	if (!pause_flag) m_x -= m_s; // 速度8 or 10
+	if (!pause_flag) m_x -= m_s; // 速度８ or １０
 
-	// 爆破後 count は13の値を得る
+	// 爆破後 count は１３の値を得る
 	if (0 < count) {
 
 		count--;
@@ -1904,7 +1605,7 @@ void Enemy1::move() {
 		if (0 < enemy_num) enemy_num -= 1; // enemy_num をマイナスする
 	}
 
-	// HOMING・PARABOLA SHOTクラス（追尾弾）を実装する為 グローバル変数に値を置換する
+	// Homing・Parabola Shotクラス（追尾弾）を実装する為　グローバル変数に値を入れる
 	enemy_x = m_x;
 	enemy_y = m_y;
 	enemy_s = m_s;
@@ -1912,21 +1613,21 @@ void Enemy1::move() {
 
 void Enemy1::draw() {
 
-	life_draw(); // 体力の描画
+	life_draw(); // 体力を描画する
 
 	if (!count_flag) {
 
 		DrawExtendGraph(m_x, m_y, m_x + m_w, m_y + m_h, loaded_picture[TYPE_ENEMY1], TRUE);
 	}
 
-	// 爆破後 count には13・count_flag は move() で true に
+	// 爆破後 count には１３・count_flag は move() で true に
 	if (count_flag && 0 <= count) {
 
-		// 爆破エフェクトを描画
+		// 爆破エフェクトを描画する
 		DrawExtendGraph(m_x - 5 * count, m_y - 5 * count, m_x + (m_w - 30) + 5 * count, m_y + m_h + 5 * count, loaded_picture[TYPE_BURN], TRUE);
 		count_flag = false;
 
-		// count <= 0 の場合 削除する
+		// count <= 0 の場合　削除する
 		if (count <= 0 && !count_flag) {
 
 			remove();
@@ -1941,10 +1642,10 @@ void Enemy1::hit(int damage, int energy) {
 
 	life_now -= damage; // 体力をマイナスする
 
-	// 体力0の場合 爆破エフェクトを実装する
+	// 体力０の場合　爆破エフェクトを実装する
 	if (life_now <= 0 && count == 0) {
 
-		count = 13; // count に13の値を入れる
+		count = 13; // count に１３の値を入れる
 		PlaySoundMem(loaded_sound[SOUND_BREAK], DX_PLAYTYPE_BACK);
 	}
 }
@@ -2028,7 +1729,7 @@ Enemy3::Enemy3() {
 	life_now = life_max;
 	damage = 1;
 	energy = 0;
-	up_down = 6; // 上下方向の速度を6に
+	up_down = 6; // 上下方向の速度を６に
 	count = 0;
 	count_flag = false;
 	SET_picture("ENEMY3.png", TYPE_ENEMY3);
@@ -2043,7 +1744,7 @@ void Enemy3::move() {
 		m_y += up_down; // 上下方向の速度
 	}
 
-	// 壁の当たり判定
+	// 画面の当たり判定
 	if (m_y < 0) up_down = -up_down; // 上
 	if (Game::HEIGHT < m_y + m_h) up_down = -up_down; // 下
 
@@ -2161,12 +1862,12 @@ Enemy5::Enemy5() {
 
 	if (stage <= 6) m_s = 4;
 	if (7 <= stage) m_s = 5;
-	
+
 	life_max = 20;
 	life_now = life_max;
 	damage = 1;
 	energy = 0;
-	up_down = 6; // 上下方向の速度を6に
+	up_down = 6; // 上下方向の速度を６に
 	count = 0;
 	count_flag = false;
 	SET_picture("ENEMY5.png", TYPE_ENEMY5);
@@ -2177,24 +1878,23 @@ void Enemy5::move() {
 
 	if (!pause_flag) {
 
-		// 特定の座標まで左向きへ
+		// 一定の座標まで左向きへ
 		if (1000 < m_x) m_x -= m_s;
 
-		// 特定の座標で上下向きへ
+		// 一定の座標で上下向きへ
 		if (m_x <= 1000) {
 
 			m_y -= up_down;
 
-			// 壁の当たり判定
+			// 画面の当たり判定
 			if (m_y < 0) up_down = -up_down; // 上
 			if (Game::HEIGHT < m_y + m_h) up_down = -up_down; // 下
 
 			if (GetRand(60) == 0) {
 
-				ThingPointa enemy_shot2(new Enemy_Shot2); // ENEMY SHOT2 クラス作成　そのアドレスを Thing クラスのスマートポインタに渡す
-				enemy_shot2->SET_position(m_x - 10, m_y + 25); // 初期配置の設定
-				game->ADD_list(enemy_shot2); // Thing リストに ENEMY SHOT2 アドレス追加
-
+				ThingPointa enemy_shot2(new Enemy_Shot2); // Enemy Shot2 クラス作成　そのアドレスを Thing クラスのスマートポインタに渡す
+				enemy_shot2->SET_position(m_x - 10, m_y + 25); // 初期位置
+				game->ADD_list(enemy_shot2); // Thing リストに Enemy Shot2 アドレスを追加する
 				PlaySoundMem(loaded_sound[SOUND_ENEMY_SHOT], DX_PLAYTYPE_BACK);
 			}
 		}
@@ -2239,7 +1939,7 @@ Enemy6::Enemy6() {
 
 	m_w = 80;
 	m_h = 50;
-	
+
 	if (stage <= 6) m_s = 5;
 	if (7 <= stage) m_s = 7;
 
@@ -2261,10 +1961,10 @@ void Enemy6::move() {
 		m_x -= m_s;
 		m_y -= up_down;
 
-		// 壁の当たり判定
-		if (m_y < 0) up_down = - up_down; // 上
-		if (Game::HEIGHT < m_y + m_h) up_down = - up_down; // 下
-		if (m_x < 0) m_s = - 2; // 左
+		// 画面の当たり判定
+		if (m_y < 0) up_down = -up_down; // 上
+		if (Game::HEIGHT < m_y + m_h) up_down = -up_down; // 下
+		if (m_x < 0) m_s = -2; // 左
 		if (Game::WIDTH + 200 < m_x + m_w) remove(); // 画面右で削除する
 
 		if (GetRand(60) == 0) {
@@ -2272,7 +1972,6 @@ void Enemy6::move() {
 			ThingPointa enemy_shot2(new Enemy_Shot2);
 			enemy_shot2->SET_position(m_x - 10, m_y + 25);
 			game->ADD_list(enemy_shot2);
-
 			PlaySoundMem(loaded_sound[SOUND_ENEMY_SHOT], DX_PLAYTYPE_BACK);
 		}
 	}
@@ -2315,10 +2014,10 @@ void Enemy6::draw() {
 // ENEMY BOSS1・2クラスの実装
 Enemy_Boss1::Enemy_Boss1() {
 
-	// ENEMY_BOSS1 ライフ設定
-	if (stage == 1 || stage == 4 || stage == 7) life_max = 3000; // STAGE1・4・7
-	if (stage == 2 || stage == 5 || stage == 8) life_max = 3500; // STAGE2・5・8
-	if (stage == 3 || stage == 6 || stage == 9) life_max = 4000; // STAGE3・6・9
+	// Enemy Boss1 ライフ設定
+	if (stage == 1 || stage == 4 || stage == 7) life_max = 3000; // STAGE１・４・７
+	if (stage == 2 || stage == 5 || stage == 8) life_max = 3500; // STAGE２・５・８
+	if (stage == 3 || stage == 6 || stage == 9) life_max = 4000; // STAGE３・６・９
 
 	m_w = 350;
 	m_h = 390;
@@ -2326,7 +2025,7 @@ Enemy_Boss1::Enemy_Boss1() {
 	damage = 1;
 	energy = 0;
 	up_down = 3; // 上下向き速度
-	add_speed = 0; // 体力が半分になるまで加速は0に
+	add_speed = 0; // 体力が半分になるまで加速は０に
 	count = 0;
 	count_flag = false;
 
@@ -2342,12 +2041,12 @@ Enemy_Boss1::Enemy_Boss1() {
 
 void Enemy_Boss1::move() {
 
-	// 体力が半分以下の場合 速さを上げる
+	// 体力が半分以下の場合　速度を上げる
 	if (life_now < life_max / 2) add_speed = 3;
 
 	if (!pause_flag) {
 
-		// 特定の座標まで左向き
+		// 一定の座標まで左向き
 		if (790 < m_x) {
 
 			m_x -= 2;
@@ -2367,12 +2066,12 @@ void Enemy_Boss1::move() {
 
 	if (!pause_flag) {
 
-		// 特定の座標の場合 上下向き
+		// 一定の座標の場合　上下向き
 		if (m_x <= 790) {
 
 			m_y += up_down;
 
-			// 壁の当たり判定
+			// 画面の当たり判定
 			if (m_y + hit_y + 100 < 0) up_down = 4 + add_speed;
 			if (Game::HEIGHT + 100 < m_y + hit_h) up_down = -(4 + add_speed);
 
@@ -2408,7 +2107,7 @@ void Enemy_Boss1::life_draw() {
 
 void Enemy_Boss1::draw() {
 
-	life_draw(); // 体力
+	life_draw(); // 体力の描画
 
 	if (0 < life_now) {
 
@@ -2432,7 +2131,7 @@ void Enemy_Boss1::draw() {
 		if (count <= 0 && !count_flag) {
 
 			remove();
-			scene = 4; // ボスを撃破後 クリア画面へ
+			scene = 4; // クリア画面へ
 			StopSoundMem(Boss_m);
 			PlaySoundMem(Clear_m, DX_PLAYTYPE_LOOP);
 		}
@@ -2454,7 +2153,7 @@ Enemy_Boss2::Enemy_Boss2() {
 
 	m_w = 370;
 	m_h = 350;
-	life_max = 5000; // ENEMY BOSS2 ライフ設定
+	life_max = 5000; // Enemy Boss2 ライフ設定
 	life_now = life_max;
 	damage = 1;
 	energy = 0;
@@ -2573,7 +2272,7 @@ void Enemy_Boss2::draw() {
 	}
 }
 
-// ENEMY SHOT1 クラス（ボス）の実装
+// Enemy Shot1 クラス（ボス）の実装
 Enemy_Shot1::Enemy_Shot1() {
 
 	m_w = 25;
@@ -2583,7 +2282,7 @@ Enemy_Shot1::Enemy_Shot1() {
 	if (4 <= stage && stage <= 6) m_s = 18;
 	if (7 <= stage && stage <= 9) m_s = 20;
 	if (stage == 10) m_s = 22;
-	
+
 	damage = 2;
 	energy = 0;
 	SET_picture("ENEMY SHOT.png", TYPE_ENEMY_SHOT);
@@ -2618,7 +2317,7 @@ void Enemy_Shot1::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_ENEMY_SHOT], DX_PLAYTYPE_BACK);
 }
 
-// ENEMY SHOT2 クラス（ENEMY5・6）の実装
+// Enemy Shot2 クラス（ENEMY5・6）の実装
 Enemy_Shot2::Enemy_Shot2() {
 
 	m_w = 12;
@@ -2718,7 +2417,7 @@ void Heal2::hit(int damage, int energy) {
 	PlaySoundMem(loaded_sound[SOUND_HEAL], DX_PLAYTYPE_BACK);
 }
 
-// GAME クラスの実装
+// Game クラスの実装
 void Game::ADD_list(ThingPointa & add) {
 
 	thing_list.push_back(add); // Thing リストの下に Thing クラスの add を追加する
@@ -2733,7 +2432,7 @@ bool Game::PUSH_space() {
 
 	if (CheckHitKey(KEY_INPUT_SPACE)) {
 
-		// push_flag false の場合
+		// push_flag　false の場合
 		if (!push_flag) {
 
 			push_flag = true;
@@ -2785,19 +2484,19 @@ void Game::GAME_SET() {
 
 	game = this; // 自インスタンスのアドレスを保持する（静的）
 	scene = 0; // タイトル画面へ
-	stage = 0; // STAGEを0にする
-	score = 0; // スコアを 0に
+	stage = 0; // STAGEを０にする
+	score = 0; // スコアを０に
 	p_x = 0; // バックの x 座標を左上に設定
 	p_w = WIDTH; // バックの横幅を WIDTH に置換
-	limit_time = 500; // 制限時間を500に
+	limit_time = 600; // 制限時間を６００に
 
 	LOAD_highscore(); // スコアの読込
-	start_time = GetNowCount(); // 1s 単位にする
+	start_time = GetNowCount(); // １s 単位にする
 
 	ChangeWindowMode(TRUE); // ウィンドウを開く
 	SetGraphMode(WIDTH, HEIGHT, 32); // ウィンドウの横幅・縦幅・カラーの設定
 	DxLib_Init(); // DXライブラリを初期化する
-	SetDrawScreen(DX_SCREEN_BACK); // 裏面に画像を描画
+	SetDrawScreen(DX_SCREEN_BACK); // ウラに画像を描画
 
 	// 画像の読込
 	loaded_picture[TYPE_EMPTY] = LoadGraph("EMPTY.png");
@@ -2853,11 +2552,11 @@ void Game::GAME_TITLE() {
 
 	// 文字の描画
 	SetFontSize(20); // サイズの設定
-	DrawFormatString(10, 10, GetColor(255, 255, 255), "BEST SCORE:%d", high_score);
+	DrawFormatString(10, 10, GetColor(255, 255, 255), "B E S T  S C O R E : %d", high_score);
 
 	thing_list.clear(); // Thing リストを初期化する
-	score = 0; // スコアを0に
-	add_s = 0; // STAGE10の場合 バックを高速動かす時に置換する
+	score = 0; // スコアを０に
+	add_s = 0; // バックを高速で回す
 
 	// SPACE KEY を押した場合　SELECT画面へ
 	if (PUSH_space()) scene = 1;
@@ -2871,15 +2570,15 @@ void Game::GAME_TITLE() {
 void Game::GAME_SELECT() {
 
 	SetBackgroundColor(0, 0, 0);
-	DrawExtendGraph(50, 200, WIDTH - 50, HEIGHT - 200, Select_p, TRUE);
+	DrawExtendGraph(70, 200, WIDTH - 70, HEIGHT - 200, Select_p, TRUE);
 	DrawExtendGraph(150, HEIGHT - 100, WIDTH - 150, HEIGHT - 50, Number_p, TRUE); // PUSH SPACE の描画
 
-	// 以下↓ STAGE1~10の分岐
+	// 以下↓ STAGE１～１０の分岐
 	// stage == 1 に設定
 	if (CheckHitKey(KEY_INPUT_1)) {
 
 		scene = 2; // プレイ画面
-		stage = 1; // STAGE1
+		stage = 1; // STAGE１
 
 		// PLAYER 生成
 		ThingPointa player(new Player);
@@ -2890,7 +2589,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_2)) {
 
 		scene = 2;
-		stage = 2; // STAGE2
+		stage = 2; // STAGE２
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2900,7 +2599,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_3)) {
 
 		scene = 2;
-		stage = 3; // STAGE3
+		stage = 3; // STAGE３
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2910,7 +2609,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_4)) {
 
 		scene = 2;
-		stage = 4; // STAGE4
+		stage = 4; // STAGE４
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2920,7 +2619,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_5)) {
 
 		scene = 2;
-		stage = 5; // STAGE5
+		stage = 5; // STAGE５
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2930,7 +2629,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_6)) {
 
 		scene = 2;
-		stage = 6; // STAGE6
+		stage = 6; // STAGE６
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2940,7 +2639,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_7)) {
 
 		scene = 2;
-		stage = 7; // STAGE7
+		stage = 7; // STAGE７
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2950,7 +2649,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_8)) {
 
 		scene = 2;
-		stage = 8; // STAGE8
+		stage = 8; // STAGE８
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2960,7 +2659,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_9)) {
 
 		scene = 2;
-		stage = 9; // STAGE9
+		stage = 9; // STAGE９
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2970,7 +2669,7 @@ void Game::GAME_SELECT() {
 	if (CheckHitKey(KEY_INPUT_0)) {
 
 		scene = 2;
-		stage = 10; // STAGE10
+		stage = 10; // STAGE１０
 
 		ThingPointa player(new Player);
 		ADD_list(player);
@@ -2982,26 +2681,26 @@ void Game::GAME_PLAY() {
 
 	// バックの描画
 	DrawExtendGraph(p_x, 0, p_w, HEIGHT, Game_p, TRUE);
-	DrawExtendGraph(p_x + WIDTH, 0, p_w + WIDTH, HEIGHT, Game_p, TRUE); // 二枚目のループ
+	DrawExtendGraph(p_x + WIDTH, 0, p_w + WIDTH, HEIGHT, Game_p, TRUE); // ２枚目のループ
 
 	if (!pause_flag) {
 
-		// STAGE1～3の場合
+		// STAGE１～３の場合
 		if (stage <= 3) {
 
-			// エフェクトの実装（バックを左へ動かす）
+			// エフェクトの実装（バックを左へ回す）
 			p_x -= 2 + add_s;
 			p_w -= 2 + add_s;
 		}
 
-		// STAGE4～9の場合
+		// STAGE４～９の場合
 		if (4 <= stage && stage <= 9) {
 
 			p_x -= 3 + add_s;
 			p_w -= 3 + add_s;
 		}
 
-		// STAGE10の場合
+		// STAGE１０の場合
 		if (stage == 10) {
 
 			p_x -= 4 + add_s;
@@ -3009,7 +2708,7 @@ void Game::GAME_PLAY() {
 		}
 	}
 
-	// STAGE10　ボスの場合はバックを高速で動かす
+	// ボスの場合　バックを高速で回す
 	if (add_s < 40 && boss_flag) add_s += 1;
 
 	// バックのループ
@@ -3022,20 +2721,20 @@ void Game::GAME_PLAY() {
 	// for_eachはコンテナ（list etc.）の first-last に対して関数の適用を実装する
 	// 構文は [CAPTURE] (仮引数リスト) {関数の本体}
 	// Thing リストに入る全てのクラスの move()関数をを使用する
-	for_each(thing_list.begin(), thing_list.end(), [] (ThingPointa & Thing) {Thing->move();});
+	for_each(thing_list.begin(), thing_list.end(), [](ThingPointa & Thing) {Thing->move(); });
 
 	// Thing リストに入る全てのクラスの draw()関数をを使用する
-	for_each(thing_list.begin(), thing_list.end(), [] (ThingPointa & Thing) {Thing->draw();});
+	for_each(thing_list.begin(), thing_list.end(), [](ThingPointa & Thing) {Thing->draw(); });
 
-	// 当たり判定の実装
+	// 当たり判定の実装をする
 	// 範囲全てのクラスに関数を「＆（参照）」にすることで 関数内で mob を使用出来る
-	// 二個のクラスを使用しているため この部分だけこの形
+	// ２個のクラスを使用しているため この部分だけこの形
 	// 当たる場合 両方の hit()関数を適用する
-	for_each(thing_list.begin(), thing_list.end(), [&] (ThingPointa & main) {
+	for_each(thing_list.begin(), thing_list.end(), [&](ThingPointa & main) {
 
 		if (main->HIT_TYPE() == TYPE_NONE) return; // TYPE_NONEの場合　無視する
 
-		for_each(thing_list.begin(), thing_list.end(), [&] (ThingPointa & mob) {
+		for_each(thing_list.begin(), thing_list.end(), [&](ThingPointa & mob) {
 
 			// 両方の HIT タイプ・GET タイプを判別して 返すタイプの等しい場合
 			if (main->HIT_TYPE() == mob->GET_TYPE()) {
@@ -3052,7 +2751,7 @@ void Game::GAME_PLAY() {
 		});
 	});
 
-	// shot_count を足し続ける
+	// shot_count をプラスする
 	shot_count++;
 
 	// game_flag true の場合
@@ -3063,15 +2762,15 @@ void Game::GAME_PLAY() {
 		now_time = -timer;
 
 		SetFontSize(20);
-		DrawFormatString(WIDTH - 120, HEIGHT - 30, GetColor(255, 255, 255), "TIME:%d", now_time); // 制限時間の描画
+		DrawFormatString(WIDTH - 200, HEIGHT - 35, GetColor(255, 255, 255), "T I M E : %d", now_time); // 制限時間の描画
 
 		// ポーズ（休止）フラグ falseである場合　敵・回復を生成
 		if (!pause_flag) {
 
-			// スコア　20000未満の場合
+			// スコア２００００未満の場合
 			if (score < 20000) {
 
-				// 敵の出現（STAGE1~9）
+				// 敵の出現（STAGE１～９）
 				// ENEMY1（普通）
 				if (stage == 1 || stage == 2 || stage == 3 || stage == 5 || stage == 6 || stage == 7) { // 出現する STAGE 設定
 
@@ -3145,7 +2844,7 @@ void Game::GAME_PLAY() {
 				}
 			}
 
-			// STAGE10
+			// STAGE１０
 			if (stage == 10) {
 
 				if (0 <= score && score < 20000) {
@@ -3215,24 +2914,24 @@ void Game::GAME_PLAY() {
 				}
 			}
 
-			// スコア 10000以上 そして ボスフラグ false の場合　ボス生成
+			// スコア ２００００以上 そして ボスフラグ false の場合　ボスを生成する
 			if (20000 <= score && !boss_flag) {
 
 				boss_flag = true; // ボスフラグを true に
 
 				if (boss_flag) {
 
-					StopSoundMem(Play_m); // プレイ中の音を停止
-					PlaySoundMem(Boss_m, DX_PLAYTYPE_LOOP); // ボス中の音を再生
+					StopSoundMem(Play_m); // プレイ中の音を停止する
+					PlaySoundMem(Boss_m, DX_PLAYTYPE_LOOP); // ボス中の音を再生する
 
-					// STAGE1～9 の場合
+					// STAGE１～９の場合
 					if (stage <= 9) {
 
 						ThingPointa enemy_boss1(new Enemy_Boss1);
 						ADD_list(enemy_boss1);
 					}
 
-					// STAGE10 の 場合
+					// STAGE１０の場合
 					if (stage == 10) {
 
 						ThingPointa enemy_boss2(new Enemy_Boss2);
@@ -3259,61 +2958,61 @@ void Game::GAME_PLAY() {
 		// ポーズ（休止）画面へ
 		if (PUSH_back()) {
 
-			if (!pause_flag) PlaySoundMem(Pause_m, DX_PLAYTYPE_BACK); // ポーズ音の再生
+			if (!pause_flag) PlaySoundMem(Pause_m, DX_PLAYTYPE_BACK); // ポーズ音の再生する
 
 			pause_flag = true;
-			StopSoundMem(Play_m); // プレイ中の音を停止
-			StopSoundMem(Boss_m); // ボス中の音を停止
+			StopSoundMem(Play_m); // プレイ中の音を停止する
+			StopSoundMem(Boss_m); // ボス中の音を停止する
 		}
 
-		// ポーズ（休止）画面の描画
+		// ポーズ（休止）画面を描画する
 		if (pause_flag) {
 
 			DrawBox(150, 150, WIDTH - 150, HEIGHT - 150, GetColor(255, 255, 255), TRUE);
 			DrawExtendGraph(170, 170, WIDTH - 170, 240, Pause_p, TRUE);
 			DrawExtendGraph(160, 330, WIDTH - 160, 420, Esc_p, TRUE);
 
-			// ポーズの終了・再開
+			// ポーズの終了・再開する
 			if (PUSH_space()) {
 
 				pause_flag = false;
 
-				// ボス未登場の場合 プレイ中の音を再生
+				// ボス未登場の場合　プレイ中の音を再生する
 				if (!boss_flag) PlaySoundMem(Play_m, DX_PLAYTYPE_LOOP);
 
-				// ボスの場合 ボス中の音を再生
+				// ボスの場合　ボス中の音を再生する
 				if (boss_flag) PlaySoundMem(Boss_m, DX_PLAYTYPE_LOOP);
 			}
 		}
 
-		// プレイしている間　画面左端に文字を描画
-		else DrawFormatString(20, HEIGHT - 30, GetColor(255, 255, 255), "BACK SPACE:PAUSE");
+		// プレイしている間　画面左端に文字を描画する
+		else DrawFormatString(50, HEIGHT - 35, GetColor(255, 255, 255), "B A C K  S P A C E : P A U S E");
 	}
 
-	// game_flag false の場合 文字を描画
+	// game_flag　false の場合　文字を描画する
 	else {
 
-		// B を押した場合 PUSH SPACE を描画
+		// B を押した場合　PUSH SPACE を描画する
 		if (CheckHitKey(KEY_INPUT_B)) space_flag = true;
 		if (space_flag) DrawExtendGraph(150, HEIGHT - 100, WIDTH - 150, HEIGHT - 50, Push_p, TRUE);
 
-		// 操作 文字の描画
-		DrawFormatString(620, 180, GetColor(255, 255, 255), "■ OPERATING METHOD ■");
-		DrawFormatString(620, 210, GetColor(0, 255, 255), "B:SHOT");
-		DrawFormatString(620, 240, GetColor(255, 255, 255), "ELSE:SPECIAL SHOT");
-		DrawFormatString(620, 270, GetColor(0, 255, 255), "SCORE:20000");
+		// 操作　文字を描画する
+		DrawFormatString(600, 140, GetColor(255, 255, 255), "■ O P E R A T I N G  M E T H O D ■");
+		DrawFormatString(600, 170, GetColor(0, 255, 255), "B : S H O T");
+		DrawFormatString(600, 200, GetColor(255, 255, 255), "E L S E : S P E C I A L  S H O T");
+		DrawFormatString(600, 230, GetColor(0, 255, 255), "S C O R E : 2 0 0 0 0");
 
-		DrawFormatString(620, 350, GetColor(255, 255, 255), "■ HINT ■");
-		DrawFormatString(620, 380, GetColor(0, 255, 255), "IF YOU GET THE BLUE HEART");
-		DrawFormatString(620, 410, GetColor(0, 255, 255), "YOU CAN USE SPECIAL SHOT...");
+		DrawFormatString(600, 320, GetColor(255, 255, 255), "■ H I N T ■");
+		DrawFormatString(600, 350, GetColor(0, 255, 255), "I F  Y O U  G E T  T H E  B L U E  H E A R T");
+		DrawFormatString(600, 380, GetColor(0, 255, 255), "Y O U  C A N  U S E  S P E C I A L  S H O T ...");
 
-		// SPACE KEY を押した場合 プレイする
+		// SPACE KEY を押した場合　プレイスタートする
 		if (PUSH_space()) {
 
-			StopSoundMem(Title_m); // タイトル中の音を停止
-			PlaySoundMem(Play_m, DX_PLAYTYPE_LOOP); // プレイ中の音を再生
-			game_flag = true; // game_flag を trueに
-			start_time = GetNowCount(); // 制限時間
+			StopSoundMem(Title_m); // タイトル中の音を停止する
+			PlaySoundMem(Play_m, DX_PLAYTYPE_LOOP); // プレイ中の音を再生する
+			game_flag = true; // game_flag を trueにする
+			start_time = GetNowCount(); // 時間経過をスタートする
 		}
 	}
 
@@ -3321,35 +3020,35 @@ void Game::GAME_PLAY() {
 	if (!boss_flag) {
 
 		SetFontSize(20);
-		DrawFormatString(WIDTH - 220, 10, GetColor(255, 255, 255), "SCORE:%d", score);
+		DrawFormatString(WIDTH - 220, 15, GetColor(255, 255, 255), "S C O R E : %d", score);
 	}
 
 	// ESC を押した場合　タイトル画面へ戻る
 	if (CheckHitKey(KEY_INPUT_ESCAPE)) {
 
 		scene = 0;
-		StopSoundMem(Title_m); // タイトル中の音を停止
-		StopSoundMem(Play_m); // プレイ中の音を停止
-		StopSoundMem(Boss_m); // ボス中の音を停止
-		PlaySoundMem(Title_m, DX_PLAYTYPE_LOOP); // タイトル中の音を再生
+		StopSoundMem(Title_m); // タイトル中の音を停止する
+		StopSoundMem(Play_m); // プレイ中の音を停止する
+		StopSoundMem(Boss_m); // ボス中の音を停止する
+		PlaySoundMem(Title_m, DX_PLAYTYPE_LOOP); // タイトル中の音を再生する
 	}
 
-	// スコアの上限（20000に設定）
+	// スコアの上限（２００００に設定）
 	if (20000 <= score) score = 20000;
 
-	// 制限時間 0になった場合
+	// 制限時間０になった場合
 	if (now_time < 0) {
 
 		scene = 3; // オーバー画面へ
-		StopSoundMem(Play_m); // プレイ中の音を停止
-		StopSoundMem(Boss_m); // ボス中の音を停止
-		PlaySoundMem(Over_m, DX_PLAYTYPE_LOOP); // オーバー音
+		StopSoundMem(Play_m); // プレイ中の音を停止する
+		StopSoundMem(Boss_m); // ボス中の音を停止する
+		PlaySoundMem(Over_m, DX_PLAYTYPE_LOOP); // オーバー中の音を再生する
 	}
 
 	// Thing リスト内で条件：削除フラグ true のクラスを除ける（remove_if 関数）
 	// 削除フラグ true のクラスを前にする
 	// そして そのクラスを list.erase により Thing リストで削除・リスト内を詰める
-	auto end = remove_if(thing_list.begin(), thing_list.end(), [](ThingPointa & Thing) {return Thing->GET_remove();});
+	auto end = remove_if(thing_list.begin(), thing_list.end(), [](ThingPointa & Thing) {return Thing->GET_remove(); });
 	thing_list.erase(end, thing_list.end());
 }
 
@@ -3360,10 +3059,10 @@ void Game::GAME_OVER() {
 	DrawExtendGraph(10, 250, WIDTH - 10, 330, Over_p, TRUE);
 	DrawExtendGraph(150, HEIGHT - 100, WIDTH - 150, HEIGHT - 50, Push_p, TRUE);
 
-	now_score = score; // スコアに置換
+	now_score = score; // スコアに置換する
 
 	SetFontSize(20);
-	DrawFormatString(10, 10, GetColor(255, 255, 255), "YOUR SCORE:%d", now_score);
+	DrawFormatString(10, 10, GetColor(255, 255, 255), "Y O U R  S C O R E : %d", now_score);
 
 	// ハイスコアよりスコアが大きい場合
 	if (high_score < now_score) {
@@ -3373,7 +3072,7 @@ void Game::GAME_OVER() {
 		SAVE_highscore();
 	}
 
-	// SPACE KEY を押した場合 タイトル画面へ
+	// SPACE KEY を押した場合　タイトル画面へ戻る
 	if (PUSH_space()) {
 
 		scene = 0;
@@ -3389,13 +3088,13 @@ void Game::GAME_CLEAR() {
 	DrawExtendGraph(10, 250, WIDTH - 10, 330, Clear_p, TRUE);
 	DrawExtendGraph(150, HEIGHT - 100, WIDTH - 150, HEIGHT - 50, Push_p, TRUE); // PUSH SPACE の描画
 
-	// スコアの計算
-	// スコア　＝　時間スコア　＋　スコア（Max 20000）　＋　STAGE × 10000
+	// スコアに置換する
+	// スコア　＝　時間スコア　＋　スコア（MAX２００００）　＋　STAGE × 10000
 	now_score = now_time * 100 + score + stage * 10000;
 
 	SetFontSize(20);
-	DrawFormatString(10, 10, GetColor(255, 255, 255), "YOUR SCORE:%d", now_score);
-	DrawFormatString(10, 40, GetColor(255, 255, 255), "TIME POINT:%d + SCORE:%d + STAGE POINT:%d", now_time * 100, score, stage * 10000);
+	DrawFormatString(10, 10, GetColor(255, 255, 255), "Y O U R  S C O R E : %d", now_score);
+	DrawFormatString(10, 40, GetColor(255, 255, 255), "T I M E  P O I N T : %d + S C O R E : %d + S T A G E  P O I N T : %d", now_time * 100, score, stage * 10000);
 
 	// ハイスコアよりスコアが大きい場合
 	if (high_score < now_score) {
@@ -3422,7 +3121,7 @@ void Game::GAME_END() {
 // WinMain 関数
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int) {
 
-	Game game; // GAME クラスを game に置換
+	Game game; // GAME クラスを game に置換する
 	game.GAME_SET();
 	game.GAME_ALL();
 	game.GAME_END();
