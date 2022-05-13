@@ -3244,7 +3244,7 @@ void Game::Game_title() {
 	space_flag = false;
 	num_flag = false;
 	pause_flag = false;
-	debug_flag = true;	// デバッグするか否か
+	debug_flag = false;	// デバッグするか否か
 
 	if (Push_space()) {
 		if (!name_flag) {
